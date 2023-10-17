@@ -1,65 +1,52 @@
-# Web-Server
-Deploying a Web SStep 1: Prerequisites
+Pacjer and  Terraform Templates
+Running Packer Templates:
+Packer is used to create custom images that can be used with virtual machines in Azure.
 
-Before you begin, you need the following:
+Step 1: Install Packer:
+If you haven't already, download and install Packer on your local machine. You can find installation instructions for your platform on the Packer website.
 
-An Azure account
-Azure CLI installed on your local machine
-Step 2: Create a Virtual Machine
+Step 2: Create a Packer Template:
+Create a Packer JSON template that defines the configuration for building your custom image. This template specifies builders (Azure in this case), provisioners, and any required variables.
 
-Open your terminal or command prompt.
-
-Use the Azure CLI to create a new virtual machine:
-
-bash
-Copy code
-az vm create \
-  --resource-group myResourceGroup \
-  --name myVM \
-  --image UbuntuLTS \
-  --admin-username azureuser \
-  --generate-ssh-keys
-Replace myResourceGroup with the name of your Azure resource group.
-Replace myVM with your desired VM name.
-We're using the "UbuntuLTS" image, which is a popular choice for running web servers on Linux. You can choose a different image if needed.
-Once the VM is created, note down its public IP address.
-Step 3: Connect to the Virtual Machine
-
-Use SSH to connect to your VM:
-bash
-Copy code
-ssh azureuser@your-vm-public-ip
-You're now connected to your VM.
-Step 4: Install Nginx
-
-Update the package list:
-bash
-Copy code
-sudo apt update
-Install Nginx:
-bash
-Copy code
-sudo apt install nginx
-Start Nginx:
-bash
-Copy code
-sudo systemctl start nginx
-Enable Nginx to start on boot:
-bash
-Copy code
-sudo systemctl enable nginx
-Step 5: Test Your Web Server
-
-Open a web browser and enter your VM's public IP address or hostname. You should see the default Nginx welcome page.
-Step 6: Deploy Your Website
-
-Copy your website files to the VM. You can use scp or tools like rsync to transfer your website files to the VM.
-
-Configure Nginx to serve your website. Typically, you'd create a new Nginx server block in /etc/nginx/sites-available/ and link it to /etc/nginx/sites-enabled/. Don't forget to test the Nginx configuration and reload Nginx:
+Step 3: Validate the Packer Template:
+Use the packer validate command to ensure your Packer template is valid.
 
 bash
 Copy code
-sudo nginx -t
-sudo systemctl reload nginx
-Your website should now be accessible using your VM's public IP or domain.
-This example deploys a basic web server on an Azure VM. Depending on your specific requirements, you might need to perform additional configurations like setting up domain names, SSL certificates, and securing your server. Additionally, consider automating the deployment process using configuration management tools like Ansible or using Azure DevOps pipelines for continuous deployment.erver
+packer validate my-packer-template.json
+Step 4: Build the Custom Image:
+Execute Packer with the packer build command, providing the Packer template as an argument.
+
+bash
+Copy code
+packer build my-packer-template.json
+Packer will create a custom image in your Azure subscription based on the configuration in the template.
+
+Running Terraform Templates:
+Terraform is used to deploy and manage infrastructure on Azure, including virtual machines and other resources.
+
+Step 1: Install Terraform:
+Download and install Terraform on your local machine from the Terraform website.
+
+Step 2: Create a Terraform Configuration:
+Write your Terraform configuration files, typically in HashiCorp Configuration Language (HCL). Define the Azure resources you want to create, such as virtual machines, networks, and security groups.
+
+Step 3: Initialize the Working Directory:
+In the directory containing your Terraform configuration files, run terraform init to initialize the working directory and download required providers.
+
+bash
+Copy code
+terraform init
+Step 4: Review and Apply the Terraform Plan:
+Generate a Terraform execution plan with terraform plan to see what changes Terraform will make. Review the plan, and if it looks correct, apply it with terraform apply.
+
+bash
+Copy code
+terraform plan
+terraform apply
+Step 5: Confirm and Apply Changes:
+Terraform will ask for confirmation. Type yes to apply the changes.
+
+Terraform will create the specified Azure resources based on your configuration.
+
+Remember to manage sensitive information like Azure credentials securely using environment variables, secrets management, or service principals. Also, keep your Terraform state files in a secure location. This process can be automated as part of a CI/CD pipeline for deploying and managing infrastructure efficiently.
